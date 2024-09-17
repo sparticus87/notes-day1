@@ -1,0 +1,61 @@
+unix.stackexchange.com
+regex101.com
+phoenixnap.com
+DAY 1
+commands
+___________________
+ls -l   |  touch -t
+mkdir  |  umask
+chmod 777  |  pwd
+rm -rf  |  rmdir
+ls ~/* .log  |  cp/mv--src--dst--
+nano (editor)  |  sudo !!
+grep -E
+_________________________________
+BRACE EXPANSION on mkdir and touch examples
+mkdir $HOME/11{23,34,45,56} <-- creates directories 1123 1134 1145 1156
+touch $HOME/1123/{1..5}.txt $HOME/1123/{6..9}~.txt <-- creates files in 1123 directory with different names
+.
+find -iname (text)| -exec| -printf %f(filename) %i(inode#)| -inum (specific i#)| ! (not sign)| \n (newline)| {} (anything from last command)| type f,d| atime 365((days)a=accessed c=changed m=modified)| amin -60((min)accessed in last hr)
+find -maxdepth(how far into the filesystem)| 
+2>/dev/null \; <-- error codes or issues
+.
+find $HOME/1123 -iname *.txt.
+find $HOME/1123 -iname *.txt |grep -v ~.txt
+find $HOME/1123 ! -iname *~* -iname *.txt -exec cp {} $HOME/CUT 2>/dev/null  \;
+find /var -empty -printf "%i %f\n" 2>/dev/null (all empty files with only filename and inode #)
+find / -inum 4026532575 -printf "%f\n" (specific inum and the filename)
+
+DAY 2
+commands
+______________________
+ps
+>  <-- redirect
+>> <-- append
+|| <-- or
+!  <-- not
+sort | uniq
+sort -u
+___________________________
+.
+cut -d (delimeter)| -f (field you want)| -s (specific delimeter)|
+^(?:(?:25[0-5]|2[0-4]\d|1?\d{1,2})(?:\.(?!$)|$)){4}$ <-- regex for ip
+.
+cut -d: -f1 <-- example of getting usernames in /etc/passwd
+cut -d: -f1- <-- tac after 1 gives everything after f1
+ls -l ~/CUT | cut -d. -f1- -s | cut -d' ' -f9 -s > $HOME/CUT/names <-- lists everything in CUT directory then cuts out everything with a .(extension) then cuts out anything within the 9th field
+
+awk <-- pattern scanning language allows processing of lines of text to output.
+-F: field seperator | $NF (not first)(only last field) | OFS (offset field seperator)
+awk -F: '{print %1}' fakepasswd
+awk -F: '($3 == 0) {print $1}' fakepasswd <-- grabs anything in field 3 with a value of 0
+awk -F: 'BEGIN {OFS="#"} {print $1,$3}' fakepasswd <-- grabs field 1 and 3 and puts a # inbetween then
+
+sort -n (numbers | -r (numerically reversed) | -t (field seperator)| -k (columns)
+
+uniq selects content uniquely  | -c  
+
+sed | -e expression for multiple patterns | S (substitution start pattern | g (global ) | d(deletes)| $(end of line)
+sed -e 's/chicken/hamburger/g' -e 's/pepperoni/sausage/' pizza.txt <-- replacing every instance of hamburger with chicken, sausage replaces pepperoni the fist time
+sed -e '/chicken/d' pizza.txt
+
