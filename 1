@@ -1,0 +1,12 @@
+BRACE EXPANSION on mkdir and touch examples
+mkdir $HOME/11{23,34,45,56}
+touch $HOME/1123/{1..5}.txt $HOME/1123/{6..9}~.txt
+.
+find -iname (text)| -exec| -printf %f(filename) %i(inode#)| -inum (specific i#)| ! (not sign)| 
+2>/dev/null \; <-- error codes or issues
+.
+find $HOME/1123 -iname *.txt.
+find $HOME/1123 -iname *.txt |grep -v ~.txt
+find $HOME/1123 ! -iname *~* -iname *.txt -exec cp {} $HOME/CUT 2>/dev/null  \;
+find /var -empty -printf "%i %f\n" 2>/dev/null (all empty files with only filename and inode #)
+find / -inum 4026532575 -printf "%f\n" (specific inum and the filename)
