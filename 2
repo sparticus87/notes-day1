@@ -86,5 +86,254 @@ else
     echo no taz at commisary
 fi
 ____________________________________________
+Brace expansion is a mechanism by which arbitrary strings may be generated, for commands that will take multiple arguements. 
+For the below examples, the first example is equivalent to the second command.
+Activity: Using Brace-Expansion, create the following directories within the $HOME directory:
+
+    1123
+    1134
+    1145
+    1156
+
+mkdir $HOME/11{23,34,45,56}
+______________________________________________
+01.2 - BASH Activity 
+Activity:
+
+Use Brace-Expansion to create the following files within the $HOME/1123 directory. You may need to create the $HOME/1123 directory. Make the following files, but utilze Brace Expansion to make all nine files with one touch command.
+
+Files to create:
+
+    1.txt
+    2.txt
+    3.txt
+    4.txt
+    5.txt
+    6~.txt
+    7~.txt
+    8~.txt
+    9~.txt
+
+touch $HOME/1123/{1..5}.txt $HOME/1123/{6..9}~.txt
+_______________________________________________________
+01.3 - BASH Activity
+
+Activity:
+
+Using the find command, list all files in $HOME/1123 that end in .txt.
+
+Be aware that if you use Pattern Matching to locate the files you may have unintended results based on if you use quotes around the pattern or not. 
+If you do not quote the pattern, the Bash shell interprets the pattern. If you quote the pattern, it is passed to the command for it to interpret. 
+You can have a properly functioning command, yet unintended output, based on which of these two gets to interpret the pattern.
+
+find $HOME/1123 -iname *.txt
+___________________________________________________________________________________________
+02 - BASH Activity 
+
+Activity:
+
+Copy all files in the $HOME/1123 directory, that end in ".txt", and omit files containing a tilde "~" character, to directory $HOME/CUT.
+Use only the find and cp commands. You will need to utilize the -exec option on find to accomplish this activity.
+The find command uses BOOLEAN "!" to designate that it does not want to find any files or directories that follows.
+
+find $HOME/1123 ! -iname *~* -iname *.txt -exec cp {} $HOME/CUT 2>/dev/null  \;
+_________________________________________________________________________________________________
+03 - BASH Activity 
+
+Activity:
+
+Using ONLY the find command, find all empty files/directories in directory /var and print out ONLY the filename (not absolute path), and the inode number, separated by newlines.
+Tip: When using the man pages, it is better to focus your search then to visually scan 1000+ lines of text. 
+Combining the output with the grep command, possibly with its -A, -B, or -C options, can help drive context driven searches of those manual pages.
+
+Example Output
+123 file1
+456 file2
+789 file3
+
+find /var -empty -printf "%i %f\n" 2>/dev/null
+______________________________________________________________________________________________________
+04 - BASH Activity 
+
+
+
+Activity:
+
+Using ONLY the find command, find all files on the system with inode 4026532575 and print only the filename to the screen, not the absolute path to the file,
+separating each filename with a newline. Ensure unneeded output is not visible.
+Tip: The above inode is specific to this CTFd question and might not be in use on your Linux Opstation.
+Instead, you can test your command on your Linux OpStation against inode 999.
+
+find / -inum 4026532575 -printf "%f\n"
+___________________________________________________________________________________________________________-
+ 05 - BASH Activity
+    Using only the ls -l and cut Commands, write a BASH script that shows all filenames with extensions ie: 1.txt, etc., but no directories, in $HOME/CUT.
+    Write those to a text file called names in $HOME/CUT directory.
+    Omit the names filename from your output.
+NOTE: The output should only be the file names with no additional information. Additionally, your code will be executed twice.
+This is to ensure you have taken into account how file redirection and command execution works.
+
+ls -l ~/CUT | cut -d. -f1- -s | cut -d' ' -f9 -s > $HOME/CUT/names
+______________________________________________________________________________________________________________________
+ 06 - BASH Activity
+
+Activity:
+Write a basic bash script that greps ONLY the IP addresses in the text file provided (named StoryHiddenIPs in the current directory); sort them uniquely by number of times they appear.
+It is not important to have a regular expression that only catches fully valid IP addresses. It is more important that you become familiar with creating and using regular expressions.
+Below, there are some useful websites that you can use to visually see what your regular expression pattern is matching on.
+
+grep -oP "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" StoryHiddenIPs|sort |uniq -c |sort -nr
+________________________________________________________________________________________________________________________
+07 - BASH Activity 
+
+Activity:
+
+    Using ONLY the awk command, write a BASH one-liner script that extracts ONLY the names of all the system and user accounts that are not UIDs 0-3.
+    Only display those that use /bin/bash as their default shell.
+    The input file is named $HOME/passwd and is located in the current directory.
+    Output the results to a file called $HOME/SED/names.txt
+
+Tip: awk can use conditional statements, e.g. print only the line in /etc/passwd that has "root" as its first field.
+
+awk -F: '($3 > 3 && $NF == "/bin/bash") {print $1}' ~/passwd > ~/SED/names.txt
+___________________________________________________________________________________________________________________________________________---
+08 - BASH Activity 
+
+
+
+Activity:
+    Find all dmesg kernel messages that contain CPU or BIOS (uppercase) in the string, but not usable or reserved (case-insensitive)
+    Print only the msg itself, omitting the bracketed numerical expressions ie: [1.132775]
+Note: For security reasons, the dmesg command is being emulated on the CTFd backend. You can still use it as normal on your Linux OpStation, but to get a similar output, do not use any dmesg switches.
+The intent of this activity is to take raw dmesg output and combine it with grep and either awk or cut to manipulate the output into a desired end state.
+Tip: As you may have noticed, when using grep you can simulate a logical AND by piping the output of one grep command to the next.
+This will filter down your output to only what contains all your patterns. But, for this activity, you will need to use a logical OR to match on a wide range of strings.
+If you do not recall how to utilize that option in grep, go research it from the resources available to you.
+
+dmesg |grep -E "CPU|BIOS" | egrep -v 'usable|reserved' | cut -d] -f2-
+___________________________________________________________________________________________________________________________________________________________________________
+09 - BASH Activity
+
+Activity:
+  Write a Bash script using "Command Substitution" to replace all passwords, using openssl, from the file $HOME/PASS/shadow.txt with the MD5 encrypted password: Password1234, with salt: bad4u
+    Output of this command should go to the screen/standard output.
+    You are not limited to a particular command, however you must use openssl. Type man openssl passwd for more information.
+TIP: While not required, using awk is possibly the most straightforward method of accomplishing this activity. Keep in mind that awk is its own programming language. It can not use Bash variables unless you import them in.
+Below is a break down of applicable parts of an awk command, with descriptions of each part. See if you can use this example as a jumping off point to accomplish the end state of the activity.
+
+#!/bin/bash
+HASHED=$(openssl passwd -1 -salt bad4u Password1234)
+awk -F: -v hh=$HASHED '{OFS=":"}{$2=hh;print}' $HOME/PASS/shadow.txt
+________________________________________________________________________________________________________________________________________________________________________________
+10 - BASH Activity
+
+Activity:
+    Using ONLY sed, write all lines from $HOME/passwd into $HOME/PASS/passwd.txt that do not end with either /bin/sh or /bin/false.
+TIP: When designating a path in a sed command, you must escape the path characters if they are to be interpreted as part of the string
+
+sed -e '/\/bin\/sh/d' -e '/\/bin\/false/d' ~/passwd > ~/PASS/passwd.txt
+_____________________________________________________________________________________________________________________________________________________________________________-----
+11 - BASH Activity 
+
+
+
+Activity:
+    Using find, find all files under the $HOME directory with a .bin extension ONLY.
+    Once the file(s) and their path(s) have been found, remove the file name from the absolute path output.
+    Ensure there is no trailing / at the end of the directory path when outputting to standard output.
+    You may need to sort the output depending on the command(s) you use.
+Tip: For stripping the filename out of the output, there are different ways that this can be accomplished based on what you have learned so far.
+    Utilizing -printf options on find.
+    Utilizing awk to manipulate the fields. This may leave the trailing / if you don't take that into account.
+    Utilizing the rev and cut commands creatively.
+
+find $HOME -iname "*.bin" -printf "%h\n" | sort -u
+__________________________________________________________________________________________________________________________________________________________________________
+12 - BASH Activity 
+
+Activity:
+    Write a script which will copy the last entry/line in the passwd-like file specified by the $1 positional parameter
+    Modify the copied line to change:
+        User name to the value specified by $2 positional parameter
+        Used id and group id to the value specified by $3 positional parameter
+        Home directory to a directory matching the user name specified by $2 positional parameter under the /home directory
+        The default shell to `/bin/bash'
+    Append the modified line to the end of the file
+
+
+
+    
+
+_________________________________________________________________________________________________________________________________________________________________________
+13 - BASH Activity 
+
+Activity:
+    Find all executable files under the following four directories:
+        /bin
+        /sbin
+        /usr/bin
+        /usr/sbin
+    Sort the filenames with absolute path, and get the md5sum of the 10th file from the top of the list.
+Tip: In the below example, you can see the different uses of md5sum. While not wrong, the first command is hashing the string output of the the find command.
+In the second, md5sum is hashing the file contents of the given file, which is what is intended for this activity. You can also tell the second method hashed the file as the file name is listed in the hash output;
+the first only lists a hyphen indicating a string was hashed. For this activity, to provide md5sum with the 10th file of the sorted output, it is recommended to use Command Subtitution.
+
+md5sum $(find /bin /sbin /usr/sbin /usr/bin -executable -type f | sort -u | head -10 | tail -1) | cut -d' ' -f1
+____________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
