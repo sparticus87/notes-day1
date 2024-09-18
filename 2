@@ -1,3 +1,10 @@
+linop: 192.168.68.20 , 10.50.33.189
+winop: 192.168.68.10 , 10.50.38.93
+Answer server (CFTd) 10.50.40.84
+
+
+
+
 unix.stackexchange.com
 regex101.com
 phoenixnap.com
@@ -11,6 +18,7 @@ rm -rf  |  rmdir
 ls ~/* .log  |  cp/mv--src--dst--
 nano (editor)  |  sudo !!
 grep -E
+tar -czf
 _________________________________
 BRACE EXPANSION on mkdir and touch examples
 mkdir $HOME/11{23,34,45,56} <-- creates directories 1123 1134 1145 1156
@@ -58,4 +66,25 @@ uniq selects content uniquely  | -c
 sed | -e expression for multiple patterns | S (substitution start pattern | g (global ) | d(deletes)| $(end of line)
 sed -e 's/chicken/hamburger/g' -e 's/pepperoni/sausage/' pizza.txt <-- replacing every instance of hamburger with chicken, sausage replaces pepperoni the fist time
 sed -e '/chicken/d' pizza.txt
+
+COMMAND SUBSTITUTION
+#!/bin/bash
+A=$(/etc/passwd)
+echo $A
+___________________________________________
+if else statements
+if/elif/else/fi
+
+#!/bin/bash
+
+contents=$(cat simpiple2.txt)            
+if [[ $contents == "tacos ]]; then
+      echo only on tuesdats
+elif [[ $contents -- "costco" ]]; then
+    echo is cool but expensive
+else 
+    echo no taz at commisary
+fi
+____________________________________________
+
 
